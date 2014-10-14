@@ -367,7 +367,15 @@ def make_anchor_tag(match):
     else:
         return anchor
 
+# {{convert}} template special handling (covers *many* numeric quantities)
+convertTemplate = re.compile(r'\{\{convert\|([^|}]*)\|([^|}]*)[^}]*\}\}')
+def expand_convert(match):
+    quantity = match.group(1)
+    qunit = match.group(2)
+    return '%s %s' % (quantity, qunit)
+
 def clean(text):
+    text = convertTemplate.sub(expand_convert, text)
 
     # FIXME: templates should be expanded
     # Drop transclusions (template, parser functions)
